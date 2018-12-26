@@ -10,3 +10,4 @@ if left_side == right_side:
     print(f'Совпало {left_side} = {right_side}')
 else:
     print('Не совпало')
+    
