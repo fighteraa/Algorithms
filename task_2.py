@@ -1,102 +1,111 @@
-import cProfile
+# Написать программу сложения и умножения двух шестнадцатеричных чисел. При этом каждое
+# число представляется как массив, элементы которого это цифры числа.
+# Например, пользователь ввёл A2 и C4F. Сохранить их как [‘A’, ‘2’] и [‘C’, ‘4’, ‘F’] соответственно.
+# Сумма чисел из примера: [‘C’, ‘F’, ‘1’], произведение - [‘7’, ‘C’, ‘9’, ‘F’, ‘E’]
 
+from collections import Counter
 
-def sieve_Er(number):
-    if number == 1:
-        answer = 2
-        # print(f'число {answer}, по счету {number}')
+numerals = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
+            'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15}
 
-    else:
-        n = number * number
-        count = 1
-        sieve = [i for i in range(n)]
-        sieve[1] = 0
-        result = []
-        for i in range(2, n):
-            if count == number:
-                break
-            if sieve[i] != 0:
-                count += 1
-                j = i + i
-                while j < n:
-                    sieve[j] = 0
-                    j += i
-        result = [i for i in sieve if i != 0]
-        # print(result)
-        # print(f'число {result[number - 1]}, по счету {number}')
+number11 = Counter()
+number22 = Counter()
 
+number1 = list(input('Введите первое шестнадцатиразрядное число: '))
+number2 = list(input('Введите второе шестнадцатиразрядное число: '))
 
-# Тестирование через timeit
-# 100 loops, best of 5: 72.4 usec per loop - 10
-# 100 loops, best of 5: 2.2 msec per loop - 50
-# 100 loops, best of 5: 9.66 msec per loop - 100
-# 100 loops, best of 5: 30.6 msec per loop - 170
-# 100 loops, best of 5: 73.5 msec per loop - 250
-# 100 loops, best of 5: 320 msec per loop - 500
-# 100 loops, best of 5: 1.39 sec per loop - 1000
+# number1 = list(['C', '4', 'F'])
+# number2 = list(['A', '2'])
 
-# cProfile.run('sieve_Er(500)')
-# 1    0.000    0.000    0.000    0.000 task_2.py:3(sieve_Er) - 10
-# 1    0.002    0.002    0.003    0.003 task_2.py:3(sieve_Er) - 50
-# 1    0.007    0.007    0.010    0.010 task_2.py:3(sieve_Er) - 100
-# 1    0.022    0.022    0.028    0.028 task_2.py:3(sieve_Er) - 170
-# 1    0.055    0.055    0.068    0.068 task_2.py:3(sieve_Er) - 250
-# 1    0.301    0.301    0.367    0.367 task_2.py:3(sieve_Er) - 500
-# 1    1.198    1.198    1.441    1.441 task_2.py:3(sieve_Er) - 1000
+# Вместо тогг, чтобы просто счивывать массив с конца, я его сначала разворачиваю и считываю с начала
+# сразу не пришло в голову, что есть возможность массив с конца считывать
+number1.reverse()
+number2.reverse()
 
-# Другой алгоритм реализации:
-def my_not_sieve(number):
-    if number == 1:
-        answer = 2
-        # print(f'число {answer}, по счету {number}')
-    else:
-        count = 1
-        n = number * number
-        lst = [2]
-        for i in range(3, n + 1, 2):
-            if count == number:
-                break
-            if (i > 10) and (i % 10 == 5):
-                continue
-            for j in lst:
-                if j * j - 1 > i:
-                    lst.append(i)
-                    count += 1
-                    break
-                if (i % j == 0):
-                    break
-            else:
-                lst.append(i)
-                count += 1
-        # print(lst)
-        # print(f'число {lst[number - 1]}, по счету {number}')
+if len(number1) >= len(number2):
+    len_arr = len(number1)
+else:
+    len_arr = len(number2)
 
+# Перевод введенной строки в 2 массива Counter, чтобы потом их складывать
+len_arr1 = len(number1)
+len_arr2 = len(number2)
+counter1 = 0
+counter2 = 0
+for i in range(len_arr):
+    for keys in numerals.keys():
+        if len(number1) > i:
+            if number1[i] == keys:
+                number11[counter1] = numerals[keys]
+                counter1 += 1
+        if len(number2) > i:
+            if number2[i] == keys:
+                number22[counter2] = numerals[keys]
+                counter2 += 1
 
-# Тестирование через timeit
-# 100 loops, best of 5: 29 usec per loop - 10
-# 100 loops, best of 5: 374 usec per loop - 50
-# 100 loops, best of 5: 722 usec per loop - 100
-# 100 loops, best of 5: 1.73 msec per loop - 170
-# 100 loops, best of 5: 2.71 msec per loop - 250
-# 100 loops, best of 5: 6.89 msec per loop - 500
-# 100 loops, best of 5: 24.8 msec per loop - 1000
+# print(f'Исходные числа переведенные: {number1}  и  {number2}')
 
-cProfile.run('my_not_sieve(500)')
-# 1    0.000    0.000    0.000    0.000 task_2.py:39(my_not_sieve) - 10
-# 1    0.000    0.000    0.000    0.000 task_2.py:39(my_not_sieve) - 50
-# 1    0.001    0.001    0.001    0.001 task_2.py:39(my_not_sieve) - 100
-# 1    0.002    0.002    0.002    0.002 task_2.py:39(my_not_sieve) - 170
-# 1    0.003    0.003    0.003    0.003 task_2.py:39(my_not_sieve) - 250
-# 1    0.008    0.008    0.008    0.008 task_2.py:46(my_not_sieve) - 500
-# 1    0.020    0.020    0.021    0.021 task_2.py:39(my_not_sieve) - 1000
+#               Функция суммы:
+# Сначала суммировали 2 числа Counter, а потом
+# сложение в столбик
+def my_summa(number_my11, number_my22):
+    number_my11 = Counter(number_my11)
+    number_my22 = Counter(number_my22)
+    summa = number_my11 + number_my22
+    offset = 0
+    for keys in summa.keys():
+        summa[keys] = summa[keys] + offset
+        if summa[keys] >= 16:
+            offset = summa[keys] // 16
+            summa[keys] = summa[keys] % 16
+        else:
+            summa[keys] = summa[keys]
+            offset = 0
+    if offset > 0:
+        summa[keys + 1] = offset
+        offset = 0
+    return summa
 
+# Функция вывода в шестнадцатиричной  форме числа на экран:
+def my_output(number_output):
+    answer_output = []
+    for i in range(len(number_output)):
+        for keys, value in numerals.items():
+            if number_output[i] == value:
+                answer_output.append(keys)
+    answer_output.reverse()
+    return answer_output
 
-# sieve_Er(3)
-# my_not_sieve(4)
+# Умножение двух чисел
+answer_spam = dict()
+answer_product = []
+offset = 0
+k = 0
+number11 = dict(number11)
+number12 = dict(number22)
+# print('*' * 50)
+count_sum = 0
+for keys1 in number11.keys():
+    for keys2 in number22.keys():
+        k = number11[keys1] * number22[keys2] + offset
+        if k >= 16:
+            offset = k // 16
+            answer_spam[keys2 + count_sum] = k % 16
+        else:
+            answer_spam[keys2 + count_sum] = k
+            offset = 0
+    if offset > 0:
+        answer_spam[keys2 + 1 + count_sum] = offset
+        offset = 0
+    count_sum += 1
+    answer_product.append(answer_spam)
+    answer_spam = dict()
 
-# Вывод:
-# Алгоритм поиска простых числел, который я применил, имеет линейную сложность O(n).
-# B википедии нашел сложность алгоритма Решета Эрастофена О(n * log(logn))
-# Сложность растет с увеличение количества элементов в массиве, т.к. обработка исходного массива
-# начинает занимать больше времени.
-# В текущем примере мой алгоритм быстрее.
+# Окончательный вывод на экран
+summa_out = my_summa(number11, number22)
+print(f'Cумма = {my_output(summa_out)}')
+
+product = Counter({})
+for i in answer_product:
+    product = my_summa(product, i)
+print(f'Произведение = {my_output(product)}')
